@@ -301,31 +301,29 @@
                                     </thead>
                                     <tbody>
                                         @foreach($data['tarjetas'] as $tarjeta)
-                                            @if($tarjeta->en_tramite === 1)
-                                                @php
-                                                    $beneficiarios = json_decode($tarjeta->beneficiarios,true);
-                                                    $beneficiarios = implode(', ', $beneficiarios);
-                                                @endphp
-                                                <tr>
-                                                    <td>{{ $tarjeta->cliente }}</td>
-                                                    <td>{{ $tarjeta->numero }}</td>
-                                                    <td>{{ $tarjeta->tipo }}</td>
-                                                    <td>
-                                                        <form action="{{ route('addBeneficiarios', $tarjeta->id) }}" method="POST">
-                                                            @csrf
-                                                            @method('PATCH')
-                                                            <input type="text" name="beneficiarios" value="{{ $beneficiarios }}" class="form-control" />
-                                                            <input type="hidden" name="accion" value="agregar_beneficiarios">
-                                                            <input type="hidden" name="id" value="{{ $tarjeta->id }}">
-                                                            <input type="hidden" name="cliente" value="{{ $tarjeta->cliente }}">
-                                                            <input type="hidden" name="numero" value="{{ $tarjeta->numero }}">
-                                                            <input type="hidden" name="tipo" value="{{ $tarjeta->tipo }}">
-                                                            <input type="hidden" name="sucursal" value="{{ $tarjeta->sucursal }}">
-                                                            <input type="submit" value="Agregar" class="form-control btn btn-success" />
-                                                        </form>
-                                                    </td>
-                                                </tr>
-                                            @endif
+                                            @php
+                                                $beneficiarios = json_decode($tarjeta->beneficiarios,true);
+                                                $beneficiarios = implode(', ', $beneficiarios);
+                                            @endphp
+                                            <tr>
+                                                <td>{{ $tarjeta->cliente }}</td>
+                                                <td>{{ $tarjeta->numero }}</td>
+                                                <td>{{ $tarjeta->tipo }}</td>
+                                                <td>
+                                                    <form action="{{ route('addBeneficiarios', $tarjeta->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <input type="text" name="beneficiarios" value="{{ $beneficiarios }}" class="form-control" />
+                                                        <input type="hidden" name="accion" value="agregar_beneficiarios">
+                                                        <input type="hidden" name="id" value="{{ $tarjeta->id }}">
+                                                        <input type="hidden" name="cliente" value="{{ $tarjeta->cliente }}">
+                                                        <input type="hidden" name="numero" value="{{ $tarjeta->numero }}">
+                                                        <input type="hidden" name="tipo" value="{{ $tarjeta->tipo }}">
+                                                        <input type="hidden" name="sucursal" value="{{ $tarjeta->sucursal }}">
+                                                        <input type="submit" value="Agregar" class="form-control btn btn-success" />
+                                                    </form>
+                                                </td>
+                                            </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
@@ -777,41 +775,5 @@
 
     </div>
 </div>
-
-
-
-
-
-<script type="text/javascript">
-    $(document).ready(function(){
-        $(document).on("change","form#consulta_de_movimientos", function(){ // Si tratamos con HTML dinámico, AJAX funciona porque le decimos que el elemento dinámico es un form
-            console.log('[ajax-onchange] Submit automático para: '+this.id);
-            $('#'+this.id).submit();
-        });
-
-        $(document).on("submit","form#consulta_de_movimientos", function(e){
-            e.preventDefault();
-            var _token = $("input[name='_token']").val();
-            var tarjeta = $("#select_consulta_movimientos option:selected").text();
-            $.ajax({
-                url: "http://127.0.0.1:8000/movimientos/"+tarjeta,
-                type:'GET',
-                data: {_token:_token, tarjeta:tarjeta},
-                success: function(data) {
-                    if($.isEmptyObject(data.error)){
-                        $('#wrapper_resultado_consulta_de_movimientos').html(data.resultado);
-                        jQuery("html, body").animate({
-                            scrollTop: jQuery("#wrapper_resultado_consulta_de_movimientos").offset().top
-                        }, 2000);
-                    }
-                    else{
-                        printErrorMsg(data.error);
-                    }
-                }
-            });
-           
-        });
-    });
-</script>
 
 @endsection
